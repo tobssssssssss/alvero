@@ -43,7 +43,9 @@ function CartPage() {
       const res = await submit({
         data: {
           customer: form,
-          items: items.map(({ id, name, size, qty, price }) => ({ id, name, size, qty, price })),
+          items: items.map(({ id, name, brand, color, size, qty, price }) => ({
+            id, name, brand, color, size, qty, price,
+          })),
         },
       });
       toast.success(`Objednávka ${res.orderId} prijatá`);
@@ -67,6 +69,7 @@ function CartPage() {
         </p>
         <Link
           to="/shop"
+          search={{ q: "", brand: "", category: "" }}
           className="inline-block bg-gold-gradient px-10 py-4 text-xs tracking-[0.35em] uppercase text-primary-foreground"
         >
           Preskúmať kolekciu
@@ -81,12 +84,11 @@ function CartPage() {
       <h1 className="font-display text-5xl md:text-6xl mb-12">Váš košík</h1>
 
       <div className="grid gap-16 lg:grid-cols-[1.4fr_1fr]">
-        {/* ITEMS + FORM */}
         <div>
           <div className="space-y-6">
             {items.map((item) => (
               <div
-                key={`${item.id}-${item.size}`}
+                key={`${item.id}-${item.size}-${item.color}`}
                 className="flex gap-5 border-b border-border/60 pb-6"
               >
                 <img
@@ -97,13 +99,14 @@ function CartPage() {
                 <div className="flex-1 flex flex-col justify-between">
                   <div className="flex justify-between">
                     <div>
+                      <div className="text-[10px] tracking-[0.3em] uppercase text-gold">{item.brand}</div>
                       <div className="font-display text-xl">{item.name}</div>
                       <div className="text-xs tracking-widest uppercase text-muted-foreground mt-1">
-                        Veľkosť {item.size}
+                        {item.color} · Veľkosť {item.size}
                       </div>
                     </div>
                     <button
-                      onClick={() => remove(item.id, item.size)}
+                      onClick={() => remove(item.id, item.size, item.color)}
                       className="text-muted-foreground hover:text-destructive"
                       aria-label="Odstrániť"
                     >
@@ -114,14 +117,14 @@ function CartPage() {
                     <div className="flex items-center border border-border">
                       <button
                         className="w-9 h-9 flex items-center justify-center hover:text-gold"
-                        onClick={() => setQty(item.id, item.size, item.qty - 1)}
+                        onClick={() => setQty(item.id, item.size, item.color, item.qty - 1)}
                       >
                         <Minus className="w-3 h-3" />
                       </button>
                       <div className="w-9 text-center text-sm">{item.qty}</div>
                       <button
                         className="w-9 h-9 flex items-center justify-center hover:text-gold"
-                        onClick={() => setQty(item.id, item.size, item.qty + 1)}
+                        onClick={() => setQty(item.id, item.size, item.color, item.qty + 1)}
                       >
                         <Plus className="w-3 h-3" />
                       </button>
@@ -173,7 +176,6 @@ function CartPage() {
           </form>
         </div>
 
-        {/* SUMMARY */}
         <aside className="lg:sticky lg:top-28 h-fit border border-border/60 p-8 bg-card">
           <div className="text-[10px] tracking-[0.4em] uppercase text-gold mb-6">Súhrn</div>
           <div className="space-y-3 text-sm">
@@ -191,9 +193,6 @@ function CartPage() {
               <span className="font-display text-3xl text-gold">€{total.toFixed(2)}</span>
             </div>
           </div>
-          <p className="mt-8 text-xs text-muted-foreground leading-relaxed">
-            Vaša objednávka bude doručená v podpisovej dubovej krabici do 48 hodín od potvrdenia.
-          </p>
         </aside>
       </div>
     </div>

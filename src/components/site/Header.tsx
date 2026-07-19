@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { ShoppingBag } from "lucide-react";
+import { Search, ShoppingBag } from "lucide-react";
 import { useCart } from "@/lib/cart";
 
 export function Header() {
@@ -11,13 +11,18 @@ export function Header() {
           <span className="font-display text-3xl tracking-[0.25em] text-foreground">
             ALVERO
           </span>
-          <span className="text-[10px] tracking-[0.4em] text-gold uppercase">Maison</span>
         </Link>
 
         <nav className="hidden md:flex items-center gap-10 text-xs tracking-[0.3em] uppercase text-muted-foreground">
           <Link to="/" className="hover:text-gold transition-colors">Domov</Link>
           <Link to="/shop" className="hover:text-gold transition-colors">Kolekcia</Link>
-          <Link to="/about" className="hover:text-gold transition-colors">Príbeh</Link>
+          <Link
+            to="/shop"
+            search={{ q: "", brand: "", category: "" }}
+            className="hover:text-gold transition-colors flex items-center gap-2"
+          >
+            <Search className="w-3.5 h-3.5" strokeWidth={1.5} /> Hľadať
+          </Link>
         </nav>
 
         <Link
