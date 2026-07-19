@@ -41,11 +41,12 @@ function Shop() {
     return true;
   });
 
-  const setQ = (v: string) => navigate({ search: (s) => ({ ...s, q: v }) });
+  type S = { q: string; brand: string; category: string };
+  const setQ = (v: string) => navigate({ search: (s: S) => ({ ...s, q: v }) });
   const setBrand = (v: string) =>
-    navigate({ search: (s) => ({ ...s, brand: s.brand === v ? "" : v }) });
+    navigate({ search: (s: S) => ({ ...s, brand: s.brand === v ? "" : v }) });
   const setCategory = (v: string) =>
-    navigate({ search: (s) => ({ ...s, category: s.category === v ? "" : v }) });
+    navigate({ search: (s: S) => ({ ...s, category: s.category === v ? "" : v }) });
 
   const active = q || brand || category;
 

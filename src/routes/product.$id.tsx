@@ -1,7 +1,7 @@
 import { createFileRoute, Link, notFound, useRouter } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
-import { getProduct, products } from "@/data/products";
+import { getProduct, products, type ColorVariant } from "@/data/products";
 import { useCart } from "@/lib/cart";
 
 export const Route = createFileRoute("/product/$id")({
@@ -104,7 +104,7 @@ function ProductPage() {
               Farba: <span className="text-foreground">{color.name}</span>
             </div>
             <div className="flex flex-wrap gap-3">
-              {product.colors.map((c, i) => (
+              {product.colors.map((c: ColorVariant, i: number) => (
                 <button
                   key={c.name}
                   onClick={() => setColorIdx(i)}
@@ -124,7 +124,7 @@ function ProductPage() {
               Veľkosť (EU)
             </div>
             <div className="flex flex-wrap gap-2">
-              {product.sizes.map((s) => (
+              {product.sizes.map((s: number) => (
                 <button
                   key={s}
                   onClick={() => setSize(s)}
@@ -142,7 +142,7 @@ function ProductPage() {
 
           {product.categories.length > 0 && (
             <div className="mt-8 flex flex-wrap gap-2">
-              {product.categories.map((c) => (
+              {product.categories.map((c: string) => (
                 <span key={c} className="px-3 py-1 text-[10px] tracking-widest uppercase border border-border/60 text-muted-foreground">
                   {c}
                 </span>
