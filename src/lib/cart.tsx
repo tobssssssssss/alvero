@@ -3,6 +3,8 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from "
 export type CartItem = {
   id: string;
   name: string;
+  brand: string;
+  color: string;
   price: number;
   size: number;
   image: string;
@@ -12,15 +14,15 @@ export type CartItem = {
 type CartCtx = {
   items: CartItem[];
   add: (item: Omit<CartItem, "qty">) => void;
-  remove: (id: string, size: number) => void;
-  setQty: (id: string, size: number, qty: number) => void;
+  remove: (id: string, size: number, color: string) => void;
+  setQty: (id: string, size: number, color: string, qty: number) => void;
   clear: () => void;
   count: number;
   total: number;
 };
 
 const Ctx = createContext<CartCtx | null>(null);
-const STORAGE = "alvero_cart_v1";
+const STORAGE = "alvero_cart_v2";
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
@@ -38,9 +40,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
     if (hydrated) localStorage.setItem(STORAGE, JSON.stringify(items));
   }, [items, hydrated]);
 
+  const same = (a: CartItem, id: string, size: number, color: string) =>
+    a.id === id && a.size === size && a.color === color;
+
   const add: CartCtx["add"] = (item) => {
     setItems((cur) => {
-      const idx = cur.findIndex((c) => c.id === item.id && c.size === item.size);
+      const idx = cur.findIndex((c) => same(c, item.id, item.size, item.color));
       if (idx >= 0) {
         const copy = [...cur];
         copy[idx] = { ...copy[idx], qty: copy[idx].qty + 1 };
@@ -50,13 +55,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
     });
   };
 
-  const remove: CartCtx["remove"] = (id, size) =>
-    setItems((cur) => cur.filter((c) => !(c.id === id && c.size === size)));
+  const remove: CartCtx["remove"] = (id, size, color) =>
+    setItems((cur) => cur.filter((c) => !same(c, id, size, color)));
 
-  const setQty: CartCtx["setQty"] = (id, size, qty) =>
+  const setQty: CartCtx["setQty"] = (id, size, color, qty) =>
     setItems((cur) =>
       cur
-        .map((c) => (c.id === id && c.size === size ? { ...c, qty: Math.max(1, qty) } : c))
+        .map((c) => (same(c, id, size, color) ? { ...c, qty: Math.max(1, qty) } : c))
         .filter((c) => c.qty > 0),
     );
 

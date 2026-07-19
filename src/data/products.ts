@@ -1,13 +1,13 @@
 // ─────────────────────────────────────────────────────────────
-// ALVERO — Product catalog
+// ALVERO — Katalóg topánok
 //
-// HOW TO ADD A NEW SHOE:
-// 1. Put the image in `src/assets/` (e.g. `src/assets/shoe-derby.jpg`)
-// 2. Import it below at the top of this file:
-//       import shoeDerby from "@/assets/shoe-derby.jpg";
-// 3. Add a new object to the `products` array with a unique `id`.
+// AKO PRIDAŤ NOVÚ TOPÁNKU:
+// 1) Ulož obrázok(y) do `src/assets/` (napr. `shoe-new-black.jpg`)
+// 2) Importuj ich hore v tomto súbore
+// 3) Zavolaj `topankyAdd({...})` s údajmi topánky
 //
-// Everything else (home page, shop, product page) updates automatically.
+// Všetko ostatné (domov, kolekcia, detail, hľadanie, filtre podľa značky
+// a kategórie) sa aktualizuje samo.
 // ─────────────────────────────────────────────────────────────
 
 import shoeOxford from "@/assets/shoe-oxford.jpg";
@@ -15,66 +15,130 @@ import shoeChelsea from "@/assets/shoe-chelsea.jpg";
 import shoeSneaker from "@/assets/shoe-sneaker.jpg";
 import shoeLoafer from "@/assets/shoe-loafer.jpg";
 
+export type ColorVariant = {
+  name: string;   // napr. "Čierna", "Koňak"
+  hex: string;    // napr. "#111111" — swatch na karte
+  image: string;  // obrázok tejto farby
+};
+
 export type Product = {
   id: string;
   name: string;
-  tagline: string;
+  brand: string;
+  tagline?: string;
   description: string;
-  price: number;       // in EUR
-  image: string;
-  category: "Oxford" | "Chelsea" | "Sneaker" | "Loafer";
+  price: number;                 // v EUR
+  categories: string[];          // ľubovoľné kategórie, napr. ["Bežné", "Kožené"]
   sizes: number[];
+  colors: ColorVariant[];        // prvá farba = hlavný obrázok na karte
   featured?: boolean;
 };
 
-export const products: Product[] = [
-  {
-    id: "obsidian-oxford",
-    name: "Obsidian Oxford",
-    tagline: "Ručne šitá elegancia",
-    description:
-      "Klasická čierna Oxfordka z talianskej kože. Preverená remeselnou tradíciou piatich generácií — každý steh je vedený rukou majstra.",
-    price: 690,
-    image: shoeOxford,
-    category: "Oxford",
-    sizes: [40, 41, 42, 43, 44, 45],
-    featured: true,
-  },
-  {
-    id: "cognac-chelsea",
-    name: "Cognac Chelsea",
-    tagline: "Zamatová koža, ohnivý tón",
-    description:
-      "Chelsea topánka v teplom koňakovom prevedení. Elastické boky pre dokonalé priľnutie, ručne leštená podošva.",
-    price: 750,
-    image: shoeChelsea,
-    category: "Chelsea",
-    sizes: [40, 41, 42, 43, 44, 45],
-    featured: true,
-  },
-  {
-    id: "aurum-sneaker",
-    name: "Aurum Sneaker",
-    tagline: "Minimalizmus so zlatým akcentom",
-    description:
-      "Nízky sneaker z ivory kože s detailom 18-karátovej zlatej fólie. Diskrétny luxus pre každodenné nosenie.",
-    price: 520,
-    image: shoeSneaker,
-    category: "Sneaker",
-    sizes: [39, 40, 41, 42, 43, 44, 45],
-    featured: true,
-  },
-  {
-    id: "bordeaux-loafer",
-    name: "Bordeaux Loafer",
-    tagline: "Zlatá spona, hlboké víno",
-    description:
-      "Mokasína v odtieni Bordeaux s prepracovanou zlatou sponou. Nosí sa naboso alebo s hodvábnou ponožkou.",
-    price: 640,
-    image: shoeLoafer,
-    category: "Loafer",
-    sizes: [40, 41, 42, 43, 44],
-  },
-];
+export const products: Product[] = [];
+
+// Pridaj topánku do katalógu.
+export function topankyAdd(p: Product) {
+  products.push(p);
+}
 
 export const getProduct = (id: string) => products.find((p) => p.id === id);
+
+// Všetky značky a kategórie, ktoré existujú v katalógu (pre filtre).
+export const allBrands = () =>
+  Array.from(new Set(products.map((p) => p.brand))).sort();
+export const allCategories = () =>
+  Array.from(new Set(products.flatMap((p) => p.categories))).sort();
+
+// ─────────────────────────────────────────────────────────────
+// TVOJE TOPÁNKY  ↓↓↓  (pridávaj sem)
+// ─────────────────────────────────────────────────────────────
+
+topankyAdd({
+  id: "obsidian",
+  name: "Obsidian",
+  brand: "Alvero",
+  tagline: "Ručne šitá elegancia",
+  description:
+    "Klasická kožená topánka z talianskej kože. Preverená remeselnou tradíciou — každý steh je vedený rukou majstra.",
+  price: 690,
+  categories: ["Spoločenské", "Klasika", "Kožené"],
+  sizes: [40, 41, 42, 43, 44, 45],
+  colors: [
+    { name: "Obsidiánová čierna", hex: "#0b0b0d", image: shoeOxford },
+    { name: "Koňak", hex: "#8a4a1f", image: shoeChelsea },
+  ],
+  featured: true,
+});
+
+topankyAdd({
+  id: "cognac",
+  name: "Cognac",
+  brand: "Alvero",
+  tagline: "Zamatová koža, ohnivý tón",
+  description:
+    "Vysoká kožená topánka v teplom koňakovom prevedení. Elastické boky pre dokonalé priľnutie, ručne leštená podošva.",
+  price: 750,
+  categories: ["Kotníkové", "Kožené", "Zimné"],
+  sizes: [40, 41, 42, 43, 44, 45],
+  colors: [
+    { name: "Koňak", hex: "#8a4a1f", image: shoeChelsea },
+    { name: "Čierna", hex: "#0b0b0d", image: shoeOxford },
+  ],
+  featured: true,
+});
+
+topankyAdd({
+  id: "aurum",
+  name: "Aurum",
+  brand: "Alvero",
+  tagline: "Minimalizmus so zlatým akcentom",
+  description:
+    "Nízka topánka z ivory kože s detailom 18-karátovej zlatej fólie. Diskrétny luxus pre každodenné nosenie.",
+  price: 520,
+  categories: ["Bežné", "Ľahké", "Letné"],
+  sizes: [39, 40, 41, 42, 43, 44, 45],
+  colors: [
+    { name: "Ivory", hex: "#efe7d7", image: shoeSneaker },
+    { name: "Bordeaux", hex: "#5a1520", image: shoeLoafer },
+  ],
+  featured: true,
+});
+
+topankyAdd({
+  id: "bordeaux",
+  name: "Bordeaux",
+  brand: "Alvero",
+  tagline: "Zlatá spona, hlboké víno",
+  description:
+    "Mokasína v odtieni Bordeaux s prepracovanou zlatou sponou. Nosí sa naboso alebo s hodvábnou ponožkou.",
+  price: 640,
+  categories: ["Spoločenské", "Kožené", "Letné"],
+  sizes: [40, 41, 42, 43, 44],
+  colors: [
+    { name: "Bordeaux", hex: "#5a1520", image: shoeLoafer },
+    { name: "Čierna", hex: "#0b0b0d", image: shoeOxford },
+  ],
+});
+
+// ─────────────────────────────────────────────────────────────
+// PRÍKLAD — odkomentuj a uprav pre novú topánku:
+// ─────────────────────────────────────────────────────────────
+//
+// import shoeNewBlack from "@/assets/shoe-new-black.jpg";
+// import shoeNewBrown from "@/assets/shoe-new-brown.jpg";
+//
+// topankyAdd({
+//   id: "moja-nova-topanka",           // unikátny identifikátor
+//   name: "Moja nová topánka",         // názov
+//   brand: "Alvero",                   // značka (ukazuje sa aj vo filtri)
+//   tagline: "Krátky slogan",          // voliteľné
+//   description: "Dlhší popis...",
+//   price: 590,                        // v EUR
+//   categories: ["Bežné", "Kožené"],   // ľubovoľné (chipy vo filtri)
+//   sizes: [40, 41, 42, 43, 44],
+//   colors: [
+//     { name: "Čierna", hex: "#111111", image: shoeNewBlack },
+//     { name: "Hnedá",  hex: "#5a3820", image: shoeNewBrown },
+//   ],
+//   featured: true,                    // voliteľné — zobrazí sa aj na domovskej
+// });
