@@ -107,7 +107,7 @@ function ProductPage() {
               Veľkosť (EU)
             </div>
             <div className="flex flex-wrap gap-2">
-              {product.sizes.map((s) => (
+              {product.sizes.map((s: number) => (
                 <button
                   key={s}
                   onClick={() => setSize(s)}
