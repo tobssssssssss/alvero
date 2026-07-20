@@ -11,6 +11,8 @@ Príklad je priamo v súbore (zakomentovaný).
 
 ```ts
 import shoeNewBlack from "@/assets/shoe-new-black.jpg";
+import shoeNewBlackSide from "@/assets/shoe-new-black-side.jpg";
+import shoeNewWhite from "@/assets/shoe-new-white.jpg";
 
 topankyAdd({
   id: "moja-topanka",
@@ -19,12 +21,19 @@ topankyAdd({
   price: 590,
   categories: ["Bežné", "Kožené"],
   sizes: [40, 41, 42, 43, 44],
-  colors: [{ name: "Čierna", hex: "#111", image: shoeNewBlack }],
+  colors: [
+    // Viacej obrázkov pre jednu farbu — v detaile sa automaticky
+    // prepínajú každých 10 s a dajú sa preklikať cez malé náhľady.
+    { name: "Čierna", hex: "#111", images: [shoeNewBlack, shoeNewBlackSide] },
+    { name: "Biela",  hex: "#eee", images: [shoeNewWhite] },
+  ],
   featured: true, // zobrazí sa aj na domovskej
 });
 ```
 
-Obrázky ukladaj do `src/assets/`.
+Obrázky ukladaj do `src/assets/`. Názov premennej pri importe si voľ
+ľubovoľne (napr. `ciernaTopanka`, `bielaTopanka`) — v poli `images: [...]`
+ich potom v tomto poradí zobrazí galéria.
 
 ## 2. Automatický showcase na domovskej
 
