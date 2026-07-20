@@ -11,7 +11,7 @@ export function ProductCard({ product }: { product: Product }) {
     >
       <div className="relative overflow-hidden bg-card aspect-[4/5] shadow-luxe">
         <img
-          src={hero.image}
+          src={hero.images[0]}
           alt={`${product.brand} ${product.name}`}
           loading="lazy"
           width={1200}
