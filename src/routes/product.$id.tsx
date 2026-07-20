@@ -89,7 +89,7 @@ function ProductPage() {
       <div className="mt-10 grid gap-16 lg:grid-cols-2">
         <div>
           <div className="relative aspect-[4/5] overflow-hidden bg-card shadow-luxe">
-            {images.map((src, i) => (
+            {images.map((src: string, i: number) => (
               <img
                 key={src + i}
                 src={src}
@@ -103,7 +103,7 @@ function ProductPage() {
             ))}
             {images.length > 1 && (
               <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5">
-                {images.map((_, i) => (
+                {images.map((_: string, i: number) => (
                   <span
                     key={i}
                     className={`h-[2px] transition-all ${
@@ -117,7 +117,7 @@ function ProductPage() {
 
           {images.length > 1 && (
             <div className="mt-4 grid grid-cols-5 gap-2">
-              {images.map((src, i) => (
+              {images.map((src: string, i: number) => (
                 <button
                   key={src + i}
                   onClick={() => setImgIdx(i)}
