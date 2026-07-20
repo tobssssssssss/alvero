@@ -11,6 +11,7 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { reportEvent } from "@/lib/report.functions";
 import { CartProvider } from "@/lib/cart";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
@@ -43,6 +44,18 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   const router = useRouter();
   useEffect(() => {
     reportLovableError(error, { boundary: "tanstack_root_error_component" });
+    reportEvent({
+      data: {
+        kind: "error",
+        message: error.message || "Unknown error",
+        stack: (error.stack || "").slice(0, 3500),
+        url: typeof window !== "undefined" ? window.location.href : "",
+      },
+    }).catch(() => {});
+    // Označ, že máme oznámiť opravu pri ďalšom čistom načítaní.
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem("alvero_had_error", "1");
+    }
   }, [error]);
 
   return (
@@ -127,6 +140,26 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (sessionStorage.getItem("alvero_had_error") === "1") {
+      sessionStorage.removeItem("alvero_had_error");
+      reportEvent({
+        data: {
+          kind: "recovered",
+          message: "Stránka sa načítala bez chyby po predchádzajúcom páde.",
+          url: window.location.href,
+        },
+      }).catch(() => {});
+    }
+    const onError = (e: ErrorEvent) => {
+      reportEvent({
+        data: { kind: "error", message: e.message, stack: e.error?.stack || "", url: window.location.href },
+      }).catch(() => {});
+    };
+    window.addEventListener("error", onError);
+    return () => window.removeEventListener("error", onError);
+  }, []);
   return (
     <QueryClientProvider client={queryClient}>
       <CartProvider>
