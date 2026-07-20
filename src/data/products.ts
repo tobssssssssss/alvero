@@ -16,9 +16,9 @@ import shoeSneaker from "@/assets/shoe-sneaker.jpg";
 import shoeLoafer from "@/assets/shoe-loafer.jpg";
 
 export type ColorVariant = {
-  name: string;   // napr. "Čierna", "Koňak"
-  hex: string;    // napr. "#111111" — swatch na karte
-  image: string;  // obrázok tejto farby
+  name: string;    // napr. "Čierna", "Koňak"
+  hex: string;     // napr. "#111111" — swatch na karte
+  images: string[]; // 1 alebo viac obrázkov, napr. [ciernatopanka, bielatopanka]
 };
 
 export type Product = {
