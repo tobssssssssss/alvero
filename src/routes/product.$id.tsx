@@ -87,14 +87,49 @@ function ProductPage() {
       </Link>
 
       <div className="mt-10 grid gap-16 lg:grid-cols-2">
-        <div className="relative aspect-[4/5] overflow-hidden bg-card shadow-luxe">
-          <img
-            src={color.image}
-            alt={`${product.name} ${color.name}`}
-            width={1200}
-            height={1200}
-            className="w-full h-full object-cover transition-opacity duration-500"
-          />
+        <div>
+          <div className="relative aspect-[4/5] overflow-hidden bg-card shadow-luxe">
+            {images.map((src, i) => (
+              <img
+                key={src + i}
+                src={src}
+                alt={`${product.name} ${color.name} ${i + 1}`}
+                width={1200}
+                height={1200}
+                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
+                  i === imgIdx ? "opacity-100" : "opacity-0"
+                }`}
+              />
+            ))}
+            {images.length > 1 && (
+              <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5">
+                {images.map((_, i) => (
+                  <span
+                    key={i}
+                    className={`h-[2px] transition-all ${
+                      i === imgIdx ? "w-8 bg-gold" : "w-4 bg-white/40"
+                    }`}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+
+          {images.length > 1 && (
+            <div className="mt-4 grid grid-cols-5 gap-2">
+              {images.map((src, i) => (
+                <button
+                  key={src + i}
+                  onClick={() => setImgIdx(i)}
+                  className={`aspect-square overflow-hidden border-2 transition ${
+                    i === imgIdx ? "border-gold" : "border-transparent hover:border-gold/50"
+                  }`}
+                >
+                  <img src={src} alt="" className="w-full h-full object-cover" />
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         <div>
