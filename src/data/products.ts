@@ -125,6 +125,7 @@ topankyAdd({
 // ─────────────────────────────────────────────────────────────
 //
 // import shoeNewBlack from "@/assets/shoe-new-black.jpg";
+// import shoeNewBlack2 from "@/assets/shoe-new-black-side.jpg";
 // import shoeNewBrown from "@/assets/shoe-new-brown.jpg";
 //
 // topankyAdd({
@@ -137,8 +138,10 @@ topankyAdd({
 //   categories: ["Bežné", "Kožené"],   // ľubovoľné (chipy vo filtri)
 //   sizes: [40, 41, 42, 43, 44],
 //   colors: [
-//     { name: "Čierna", hex: "#111111", image: shoeNewBlack },
-//     { name: "Hnedá",  hex: "#5a3820", image: shoeNewBrown },
+//     // Viacej obrázkov pre 1 farbu — v detaile sa automaticky
+//     // prepínajú každých 10 s a dajú sa preklikať cez náhľady.
+//     { name: "Čierna", hex: "#111111", images: [shoeNewBlack, shoeNewBlack2] },
+//     { name: "Hnedá",  hex: "#5a3820", images: [shoeNewBrown] },
 //   ],
 //   featured: true,                    // voliteľné — zobrazí sa aj na domovskej
 // });
