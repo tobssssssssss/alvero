@@ -36,8 +36,25 @@ function ProductPage() {
   const { add } = useCart();
   const router = useRouter();
   const [colorIdx, setColorIdx] = useState(0);
+  const [imgIdx, setImgIdx] = useState(0);
   const [size, setSize] = useState<number | null>(null);
   const color = product.colors[colorIdx];
+  const images = color.images;
+  const currentImg = images[imgIdx] ?? images[0];
+
+  // reset image index keď zmením farbu
+  useEffect(() => {
+    setImgIdx(0);
+  }, [colorIdx]);
+
+  // auto-prepínanie obrázkov každých 10 s (iba ak je ich viac)
+  useEffect(() => {
+    if (images.length <= 1) return;
+    const t = setInterval(() => {
+      setImgIdx((i) => (i + 1) % images.length);
+    }, 10_000);
+    return () => clearInterval(t);
+  }, [images.length, colorIdx]);
 
   const related = products.filter((p) => p.id !== product.id).slice(0, 3);
 
@@ -48,7 +65,7 @@ function ProductPage() {
     color: color.name,
     price: product.price,
     size: size!,
-    image: color.image,
+    image: currentImg,
   });
 
   const handleAdd = () => {
