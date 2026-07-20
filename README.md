@@ -11,6 +11,8 @@ Príklad je priamo v súbore (zakomentovaný).
 
 ```ts
 import shoeNewBlack from "@/assets/shoe-new-black.jpg";
+import shoeNewBlackSide from "@/assets/shoe-new-black-side.jpg";
+import shoeNewWhite from "@/assets/shoe-new-white.jpg";
 
 topankyAdd({
   id: "moja-topanka",
@@ -19,12 +21,19 @@ topankyAdd({
   price: 590,
   categories: ["Bežné", "Kožené"],
   sizes: [40, 41, 42, 43, 44],
-  colors: [{ name: "Čierna", hex: "#111", image: shoeNewBlack }],
+  colors: [
+    // Viacej obrázkov pre jednu farbu — v detaile sa automaticky
+    // prepínajú každých 10 s a dajú sa preklikať cez malé náhľady.
+    { name: "Čierna", hex: "#111", images: [shoeNewBlack, shoeNewBlackSide] },
+    { name: "Biela",  hex: "#eee", images: [shoeNewWhite] },
+  ],
   featured: true, // zobrazí sa aj na domovskej
 });
 ```
 
-Obrázky ukladaj do `src/assets/`.
+Obrázky ukladaj do `src/assets/`. Názov premennej pri importe si voľ
+ľubovoľne (napr. `ciernaTopanka`, `bielaTopanka`) — v poli `images: [...]`
+ich potom v tomto poradí zobrazí galéria.
 
 ## 2. Automatický showcase na domovskej
 
@@ -142,3 +151,65 @@ tvojho Lovable projektu alebo tvojho GitHubu — preto začni tam.
 | `src/lib/order.functions.ts` | Odoslanie objednávky na Discord |
 | `src/lib/report.functions.ts` | Chybový monitor → Discord |
 | `src/components/site/Header.tsx` | Navigácia (tK1 · Domov · Kolekcia) |
+
+---
+
+## 8. Ak ti neviem sám pridať platobný terminál — čo napísať mne / AI
+
+Ak si nevieš rady s pridaním reálnych platieb (kartový terminál, block pay,
+faktúra), pošli mi (alebo agentovi) presne toto — potom to viem doplniť za teba:
+
+### A) Klasický platobný terminál (Stripe / karta)
+
+Napíš do chatu:
+> „**Pridaj platobný terminál cez Stripe** — chcem prijímať platby kartou
+> pre topánky aj pre tK1. Účet mám v krajine `XX`, mena `EUR`. Použi
+> Lovable Payments (Stripe managed) — kľúče si vypýtaj cez Secrets.“
+
+Automaticky sa nastaví:
+- Stripe Checkout (hostovaný formulár — číslo karty nikdy nejde cez tvoj web)
+- webhook `src/routes/api/public/stripe-webhook.ts` (overený podpisom)
+- `success_url` → `/thank-you`, `cancel_url` → `/cart`
+- kľúče `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` v **Cloud → Secrets**
+
+### B) Block pay (kryptomeny — BTC / ETH / USDT)
+
+Napíš:
+> „**Pridaj block pay** — chcem prijímať krypto. Použi
+> **NOWPayments** (alebo **Coinbase Commerce** / **BTCPay Server**).
+> API kľúč mám tu, ulož ho do Secrets ako `NOWPAYMENTS_API_KEY`.“
+
+Doplní sa:
+- server function `createCryptoInvoice` — vytvorí invoice cez API providera
+- redirect zákazníka na hostovanú platobnú stránku (BTC/ETH/USDT/…)
+- webhook `src/routes/api/public/crypto-webhook.ts` — overí HMAC podpis
+  a označí objednávku ako zaplatenú
+- na Discord príde správa `💰 Krypto platba prijatá` s TX hash
+
+### C) Faktúra (bankový prevod + PDF)
+
+Napíš:
+> „**Pridaj faktúry** — po objednávke vygeneruj PDF faktúru
+> s mojimi údajmi (IČO/DIČ, IBAN) a pošli ju zákazníkovi mailom.
+> Faktúru očísluj `YYYY-0001`, `YYYY-0002`…“
+
+Doplní sa:
+- knižnica na PDF (`pdf-lib` alebo HTML → PDF cez server function)
+- šablóna `src/lib/invoice.template.tsx` — logo, položky, DPH, súčty, QR pay
+- server function `issueInvoice` — vygeneruje PDF, uloží do Cloud storage,
+  pošle zákazníkovi cez **Resend** (email API)
+- číselný rad faktúr v DB tabuľke `invoices` (RLS zapnuté, prístup iba admin)
+- prílohy sa priložia aj do Discord notifikácie objednávky
+
+### Čo mi vždy pošli spolu so žiadosťou
+
+1. **Krajinu a menu** (napr. SK / EUR).
+2. **Fakturačné údaje** (názov firmy, IČO, DIČ, IBAN) — potrebné pre faktúru.
+3. **API kľúče** provider-a (Stripe / NOWPayments / Resend) — **NIKDY**
+   ich nepíš do chatu ani do kódu. Poviem ti „pridaj Secret X“ a otvorí
+   sa ti bezpečný formulár.
+4. Či chceš **test režim** (sandbox) alebo hneď **live**.
+
+> Bez týchto info sa reálne platby nedajú spustiť — všetko ostatné
+> (dizajn, košík, e-maily, faktúra) viem pripraviť dopredu.
+

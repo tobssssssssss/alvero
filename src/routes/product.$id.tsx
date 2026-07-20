@@ -1,5 +1,5 @@
 import { createFileRoute, Link, notFound, useRouter } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { getProduct, products, type ColorVariant } from "@/data/products";
 import { useCart } from "@/lib/cart";
@@ -36,8 +36,25 @@ function ProductPage() {
   const { add } = useCart();
   const router = useRouter();
   const [colorIdx, setColorIdx] = useState(0);
+  const [imgIdx, setImgIdx] = useState(0);
   const [size, setSize] = useState<number | null>(null);
   const color = product.colors[colorIdx];
+  const images = color.images;
+  const currentImg = images[imgIdx] ?? images[0];
+
+  // reset image index keď zmením farbu
+  useEffect(() => {
+    setImgIdx(0);
+  }, [colorIdx]);
+
+  // auto-prepínanie obrázkov každých 10 s (iba ak je ich viac)
+  useEffect(() => {
+    if (images.length <= 1) return;
+    const t = setInterval(() => {
+      setImgIdx((i) => (i + 1) % images.length);
+    }, 10_000);
+    return () => clearInterval(t);
+  }, [images.length, colorIdx]);
 
   const related = products.filter((p) => p.id !== product.id).slice(0, 3);
 
@@ -48,7 +65,7 @@ function ProductPage() {
     color: color.name,
     price: product.price,
     size: size!,
-    image: color.image,
+    image: currentImg,
   });
 
   const handleAdd = () => {
@@ -70,14 +87,49 @@ function ProductPage() {
       </Link>
 
       <div className="mt-10 grid gap-16 lg:grid-cols-2">
-        <div className="relative aspect-[4/5] overflow-hidden bg-card shadow-luxe">
-          <img
-            src={color.image}
-            alt={`${product.name} ${color.name}`}
-            width={1200}
-            height={1200}
-            className="w-full h-full object-cover transition-opacity duration-500"
-          />
+        <div>
+          <div className="relative aspect-[4/5] overflow-hidden bg-card shadow-luxe">
+            {images.map((src: string, i: number) => (
+              <img
+                key={src + i}
+                src={src}
+                alt={`${product.name} ${color.name} ${i + 1}`}
+                width={1200}
+                height={1200}
+                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
+                  i === imgIdx ? "opacity-100" : "opacity-0"
+                }`}
+              />
+            ))}
+            {images.length > 1 && (
+              <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5">
+                {images.map((_: string, i: number) => (
+                  <span
+                    key={i}
+                    className={`h-[2px] transition-all ${
+                      i === imgIdx ? "w-8 bg-gold" : "w-4 bg-white/40"
+                    }`}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+
+          {images.length > 1 && (
+            <div className="mt-4 grid grid-cols-5 gap-2">
+              {images.map((src: string, i: number) => (
+                <button
+                  key={src + i}
+                  onClick={() => setImgIdx(i)}
+                  className={`aspect-square overflow-hidden border-2 transition ${
+                    i === imgIdx ? "border-gold" : "border-transparent hover:border-gold/50"
+                  }`}
+                >
+                  <img src={src} alt="" className="w-full h-full object-cover" />
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         <div>
@@ -177,7 +229,7 @@ function ProductPage() {
               <Link key={p.id} to="/product/$id" params={{ id: p.id }} className="group">
                 <div className="aspect-[4/5] overflow-hidden bg-card">
                   <img
-                    src={p.colors[0].image}
+                    src={p.colors[0].images[0]}
                     alt={p.name}
                     loading="lazy"
                     width={1200}

@@ -57,7 +57,7 @@ function Home() {
   const list = featured.length > 0 ? featured : products;
 
   // doplň druhý slide obrázkom z prvého produktu (ak existuje)
-  if (!slides[1].image && list[0]) slides[1].image = list[0].colors[0].image;
+  if (!slides[1].image && list[0]) slides[1].image = list[0].colors[0].images[0];
 
   useEffect(() => {
     const t = setInterval(() => setIdx((i) => (i + 1) % slides.length), 10_000);
