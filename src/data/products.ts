@@ -64,8 +64,8 @@ topankyAdd({
   categories: ["Spoločenské", "Klasika", "Kožené"],
   sizes: [40, 41, 42, 43, 44, 45],
   colors: [
-    { name: "Obsidiánová čierna", hex: "#0b0b0d", image: shoeOxford },
-    { name: "Koňak", hex: "#8a4a1f", image: shoeChelsea },
+    { name: "Obsidiánová čierna", hex: "#0b0b0d", images: [shoeOxford] },
+    { name: "Koňak", hex: "#8a4a1f", images: [shoeChelsea] },
   ],
   featured: true,
 });
@@ -81,8 +81,8 @@ topankyAdd({
   categories: ["Kotníkové", "Kožené", "Zimné"],
   sizes: [40, 41, 42, 43, 44, 45],
   colors: [
-    { name: "Koňak", hex: "#8a4a1f", image: shoeChelsea },
-    { name: "Čierna", hex: "#0b0b0d", image: shoeOxford },
+    { name: "Koňak", hex: "#8a4a1f", images: [shoeChelsea] },
+    { name: "Čierna", hex: "#0b0b0d", images: [shoeOxford] },
   ],
   featured: true,
 });
@@ -98,8 +98,8 @@ topankyAdd({
   categories: ["Bežné", "Ľahké", "Letné"],
   sizes: [39, 40, 41, 42, 43, 44, 45],
   colors: [
-    { name: "Ivory", hex: "#efe7d7", image: shoeSneaker },
-    { name: "Bordeaux", hex: "#5a1520", image: shoeLoafer },
+    { name: "Ivory", hex: "#efe7d7", images: [shoeSneaker] },
+    { name: "Bordeaux", hex: "#5a1520", images: [shoeLoafer] },
   ],
   featured: true,
 });
@@ -115,8 +115,8 @@ topankyAdd({
   categories: ["Spoločenské", "Kožené", "Letné"],
   sizes: [40, 41, 42, 43, 44],
   colors: [
-    { name: "Bordeaux", hex: "#5a1520", image: shoeLoafer },
-    { name: "Čierna", hex: "#0b0b0d", image: shoeOxford },
+    { name: "Bordeaux", hex: "#5a1520", images: [shoeLoafer] },
+    { name: "Čierna", hex: "#0b0b0d", images: [shoeOxford] },
   ],
 });
 
