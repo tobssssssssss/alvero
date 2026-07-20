@@ -229,7 +229,7 @@ function ProductPage() {
               <Link key={p.id} to="/product/$id" params={{ id: p.id }} className="group">
                 <div className="aspect-[4/5] overflow-hidden bg-card">
                   <img
-                    src={p.colors[0].image}
+                    src={p.colors[0].images[0]}
                     alt={p.name}
                     loading="lazy"
                     width={1200}
